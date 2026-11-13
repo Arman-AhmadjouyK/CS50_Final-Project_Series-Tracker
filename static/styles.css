@@ -1,0 +1,117 @@
+body {
+    background-color: #111318;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+a {
+    color: #f5b301;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffd25c;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Login and register */
+.form-box {
+    margin: 2rem auto;
+    max-width: 380px;
+}
+
+/* Cards on the dashboard */
+.card {
+    background-color: #1a1d24;
+}
+
+.show-card {
+    border-left: 4px solid gray;
+    overflow: hidden;
+}
+
+/* The left border shows the state of a series */
+.show-card.watch {
+    border-left-color: #f5b301;
+}
+
+.show-card.waiting {
+    border-left-color: #3dd5f3;
+}
+
+.show-card.done {
+    border-left-color: #2ecc71;
+}
+
+.title {
+    color: white;
+}
+
+.poster-link {
+    flex-shrink: 0;
+}
+
+.poster {
+    height: 100%;
+    min-height: 200px;
+    object-fit: cover;
+    width: 130px;
+}
+
+.big-poster {
+    border-radius: 8px;
+    width: 100%;
+}
+
+.thumb {
+    border-radius: 4px;
+    height: 70px;
+    object-fit: cover;
+    width: 50px;
+}
+
+.no-image {
+    align-items: center;
+    background-color: #2a2e37;
+    color: gray;
+    display: flex;
+    justify-content: center;
+}
+
+.big-poster.no-image {
+    aspect-ratio: 2 / 3;
+}
+
+.progress {
+    height: 6px;
+}
+
+summary {
+    cursor: pointer;
+    width: fit-content;
+}
+
+.summary {
+    line-height: 1.7;
+    max-width: 70ch;
+}
+
+.empty {
+    border: 1px dashed #444;
+    border-radius: 8px;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.list-group-item.new {
+    border-left: 3px solid #f5b301;
+}

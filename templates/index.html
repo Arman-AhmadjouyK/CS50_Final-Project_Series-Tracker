@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My Series
+{% endblock %}
+
+{% block main %}
+    <h1 class="h2 mb-3">My series</h1>
+
+    <form action="/search" method="get" class="d-flex gap-2 mb-4">
+        <input autocomplete="off" class="form-control" name="q" placeholder="Search a series, e.g. Dark" type="text" required>
+        <button class="btn btn-warning" type="submit">Search</button>
+    </form>
+
+    {% if not shows %}
+        <div class="empty">
+            <p class="h5">Your list is empty.</p>
+            <p class="text-body-secondary mb-0">Search for a series above and add it to start tracking.</p>
+        </div>
+    {% endif %}
+
+    <div class="row g-3">
+        {% for show in shows %}
+            <div class="col-12 col-lg-6">
+                <div class="card show-card {{ show.state }} h-100">
+                    <div class="d-flex h-100">
+                        <a href="/show/{{ show.id }}" class="poster-link">
+                            {% if show.image %}
+                                <img src="{{ show.image }}" alt="{{ show.name }}" class="poster">
+                            {% else %}
+                                <div class="poster no-image">No image</div>
+                            {% endif %}
+                        </a>
+
+                        <div class="card-body">
+                            <h2 class="h5 mb-1"><a href="/show/{{ show.id }}" class="title">{{ show.name }}</a></h2>
+                            <p class="small text-body-secondary mb-2">
+                                {{ show.status }}{% if show.network %} · {{ show.network }}{% endif %}
+                                · {{ show.total_seasons }} season{% if show.total_seasons != 1 %}s{% endif %}
+                            </p>
+
+                            <p class="fw-semibold mb-1">{{ show.message }}</p>
+
+                            {# still has seasons to watch, but the next one is already announced #}
+                            {% if show.state == "watch" and show.next_season %}
+                                <p class="small text-info mb-1">
+                                    Next: season {{ show.next_season }}, {{ show.next_date | nice_date }}
+                                </p>
+                            {% endif %}
+
+                            {% if show.days_left and show.days_left > 0 %}
+                                <p class="small text-body-secondary mb-1">in {{ show.days_left }} days</p>
+                            {% endif %}
+
+                            <div class="progress my-2">
+                                <div class="progress-bar bg-warning" style="width: {{ show.percent }}%"></div>
+                            </div>
+
+                            <form action="/watched" method="post" class="d-flex align-items-center gap-2 small">
+                                <input name="show_id" type="hidden" value="{{ show.id }}">
+                                <label>Watched</label>
+                                <select name="seasons" class="form-select form-select-sm w-auto">
+                                    {% for n in range(show.aired_seasons + 1) %}
+                                        <option value="{{ n }}" {% if n == show.watched %}selected{% endif %}>{{ n }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span>of {{ show.aired_seasons }}</span>
+                                <button class="btn btn-sm btn-outline-light" type="submit">Save</button>
+                            </form>
+
+                            {# <details> opens a confirm button without any JavaScript #}
+                            <details class="mt-2 small">
+                                <summary class="text-danger">Remove</summary>
+                                <form action="/remove" method="post" class="mt-2">
+                                    <input name="show_id" type="hidden" value="{{ show.id }}">
+                                    <button class="btn btn-sm btn-danger" type="submit">Yes, remove {{ show.name }}</button>
+                                </form>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

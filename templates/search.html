@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block main %}
+    <form action="/search" method="get" class="d-flex gap-2 mb-4">
+        <input autocomplete="off" autofocus class="form-control" name="q" type="text" value="{{ q }}" required>
+        <button class="btn btn-warning" type="submit">Search</button>
+    </form>
+
+    <h1 class="h4 mb-3">Results for "{{ q }}"</h1>
+
+    {% if not results %}
+        <p class="text-body-secondary">No series found. Check the spelling and try again.</p>
+    {% endif %}
+
+    <ul class="list-group">
+        {% for result in results %}
+            <li class="list-group-item d-flex align-items-center gap-3">
+                {% if result.image %}
+                    <img src="{{ result.image }}" alt="{{ result.name }}" class="thumb">
+                {% else %}
+                    <div class="thumb no-image">?</div>
+                {% endif %}
+
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">
+                        {{ result.name }}
+                        {% if result.year %}<span class="text-body-secondary">({{ result.year }})</span>{% endif %}
+                    </div>
+                    <div class="small text-body-secondary">
+                        {{ result.status }}{% if result.network %} · {{ result.network }}{% endif %}
+                    </div>
+                </div>
+
+                {% if result.id in following %}
+                    <span class="badge text-bg-secondary">In your list</span>
+                {% else %}
+                    <form action="/add" method="post">
+                        <input name="show_id" type="hidden" value="{{ result.id }}">
+                        <button class="btn btn-sm btn-warning" type="submit">Add</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="/" class="d-inline-block mt-3">Back to my series</a>
+{% endblock %}

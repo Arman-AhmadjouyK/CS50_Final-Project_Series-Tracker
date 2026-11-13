@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ show.name }}
+{% endblock %}
+
+{% block main %}
+    <a href="/" class="d-inline-block mb-3">Back to my series</a>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-4 col-lg-3">
+            {% if show.image %}
+                <img src="{{ show.image }}" alt="{{ show.name }}" class="big-poster">
+            {% else %}
+                <div class="big-poster no-image">No image</div>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-8 col-lg-9">
+            <h1 class="h2">{{ show.name }}</h1>
+            <p class="text-body-secondary">
+                {{ show.status }}{% if show.network %} · {{ show.network }}{% endif %}
+                · {{ show.total_seasons }} season{% if show.total_seasons != 1 %}s{% endif %}
+                {% if show.premiered %} · since {{ show.premiered[:4] }}{% endif %}
+            </p>
+
+            <div class="card card-body mb-3 show-card {{ show.state }}">
+                <p class="fw-semibold mb-1">{{ show.message }}</p>
+                {% if show.state == "watch" and show.next_season %}
+                    <p class="small text-info mb-1">Next: season {{ show.next_season }}, {{ show.next_date | nice_date }}</p>
+                {% endif %}
+
+                <div class="progress my-2">
+                    <div class="progress-bar bg-warning" style="width: {{ show.percent }}%"></div>
+                </div>
+
+                <form action="/watched" method="post" class="d-flex align-items-center gap-2 small">
+                    <input name="show_id" type="hidden" value="{{ show.id }}">
+                    <input name="back" type="hidden" value="show">
+                    <label>Watched</label>
+                    <select name="seasons" class="form-select form-select-sm w-auto">
+                        {% for n in range(show.aired_seasons + 1) %}
+                            <option value="{{ n }}" {% if n == show.watched %}selected{% endif %}>{{ n }}</option>
+                        {% endfor %}
+                    </select>
+                    <span>of {{ show.aired_seasons }}</span>
+                    <button class="btn btn-sm btn-outline-light" type="submit">Save</button>
+                </form>
+            </div>
+
+            {% if show.summary %}
+                <p class="summary">{{ show.summary }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 class="h4 mt-4">Seasons</h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Season</th>
+                <th>Episodes</th>
+                <th>Premiere</th>
+                <th>Finale</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for season in seasons %}
+                <tr>
+                    <td>{{ season.number }}</td>
+                    <td>{{ season.episodes or "-" }}</td>
+                    <td>{{ season.premiere | nice_date }}</td>
+                    <td>{{ season.finale | nice_date }}</td>
+                    <td><span class="badge text-bg-{{ season.color }}">{{ season.label }}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
